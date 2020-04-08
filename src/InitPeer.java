@@ -64,6 +64,10 @@ public class InitPeer implements RemoteInterface{
 		scheduler_executer = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(64);
 
 		serverThread = new ServerThread(this);
+		if (version == 2.0) {
+			scheduler_executer.execute(this.serverThread);
+		}
+
 		
 	}
 
@@ -125,10 +129,6 @@ public class InitPeer implements RemoteInterface{
 
 		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
 			this.getMemory().addRequestedChunkPeer(this.getMemory().getRestoreFile().getFileData().getFileId() + "_" + i);
-		}
-
-		if (this.getVersion() == 2.0) {
-			this.getExecuter().execute(this.serverThread);
 		}
 
 		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
@@ -208,7 +208,11 @@ public class InitPeer implements RemoteInterface{
     
     public Memory getMemory() {
     	return memory;
-    }
+	}
+	
+	public ServerThread getServerThread() {
+		return serverThread;
+	}
 	
 	public static void main(String[] args)  throws IOException{
 		
@@ -297,7 +301,8 @@ public class InitPeer implements RemoteInterface{
 			            ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			            out.writeObject(peer.getMemory());
 			            out.close();
-			            fileOut.close();
+						fileOut.close();
+						peer.getServerThread().close();
 			            System.out.printf("Serialized data of Peer " + peer.getId() + " has been saved in " + "./peer" + peer.getId() + "/memory" + peer.getId() +  ".ser");
 			         } catch (IOException i) {
 			            i.printStackTrace();

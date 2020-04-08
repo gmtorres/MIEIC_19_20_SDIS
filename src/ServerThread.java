@@ -22,6 +22,14 @@ public class ServerThread implements Runnable {
         
     }
 
+    public void close() {
+        try {
+            this.serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void run() {
         while (!p.getMemory().getRestoreFile().checkFlag()) {
             try {
