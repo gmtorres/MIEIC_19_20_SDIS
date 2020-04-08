@@ -1,0 +1,219 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class FileInfo implements Serializable {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ArrayList<byte[]> fileParts;
+    private File file;
+    private int numChunksWritten = 0;
+    private AtomicBoolean file_complete = new AtomicBoolean(false);
+    
+    private AtomicInteger numChunksBackedup = new AtomicInteger(0);
+    private AtomicInteger state = new AtomicInteger(0); // 0 = valid; 1 = partial failure; 2 = complete failure
+
+    private FileData fileData;
+
+    public FileInfo(String path, int replicationDegree) {
+        this.file = new File(path);
+        this.fileParts = new ArrayList<byte[]>();
+
+        fileDivision();
+
+        this.fileData = new FileData(path, createFileId(), replicationDegree, this.fileParts.size());
+    }
+
+    public FileInfo(FileData fileData) {
+        this.file = null;
+        this.fileData = fileData;
+
+        this.fileParts = new ArrayList<byte[]>(fileData.getNumberOfChunks());
+        
+        System.out.println("No of chunks:" + fileData.getNumberOfChunks());
+        for (int i = 0; i < fileData.getNumberOfChunks(); i++) {
+            this.fileParts.add(null);
+        }
+    }
+
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public FileData getFileData() {
+        return this.fileData;
+    }
+
+    public String getFileId() {
+        return this.fileData.getFileId();
+    }
+
+    public int getReplicationDegree() {
+        return this.fileData.getReplicationDegree();
+    }
+
+    public ArrayList<byte[]> getFileParts() {
+        return this.fileParts;
+    }
+
+    public int getNumberOfParts() {
+        return this.fileParts.size();
+    }
+
+    public byte[] getFilePart(int i) {
+        return this.fileParts.get(i);
+    }
+
+    private String createFileId() {
+
+        Long date = this.file.lastModified();
+        String modifiedDate = Long.toString(date);
+
+        String fileString = this.file.getName() + modifiedDate + this.file.getParent();
+
+        fileString = sha256(fileString);
+
+        return fileString;
+    }
+
+    public void setFilePart(int chunkNo, byte[] chunk) {
+        fileParts.set(chunkNo, chunk);
+        this.increaseWritten();
+        this.compareChunkNumber();
+    }
+
+    public boolean checkFlag() {
+        return this.file_complete.get();
+    }
+
+    public void increaseWritten() {
+        this.numChunksWritten++;
+    }
+
+    public int getWritten() {
+        return this.numChunksWritten;
+    }
+
+    public void activateFlag() {
+    	this.file_complete.set(true);
+    }
+
+    public void compareChunkNumber() {
+    	System.out.println( this.fileData.getFilepath() + ": " +  this.numChunksWritten + " of " + this.fileData.getNumberOfChunks());
+        if (this.numChunksWritten == this.fileData.getNumberOfChunks()) {
+        	this.activateFlag();
+        }
+    }
+
+    private void fileDivision() {
+
+        int divSize = 64000;
+        byte[] buf = new byte[divSize];
+
+        try (FileInputStream inputStream = new FileInputStream(this.file);
+                BufferedInputStream bufInputStream = new BufferedInputStream(inputStream)) {
+
+            int bytesAmount = 0;
+
+            /*
+             * while((bytesAmount = bufInputStream.read(buf)) > 0) {
+             * this.fileParts.add(buf); buf = new byte[divSize]; }
+             */
+            while ((bytesAmount = bufInputStream.read(buf, 0, divSize)) > 0) {
+                byte[] newBuf = Arrays.copyOf(buf, bytesAmount);
+                this.fileParts.add(newBuf);
+                // System.out.println("File parsed: " + new String(newBuf,StandardCharsets.UTF_8) + " " + newBuf.length);
+                buf = new byte[divSize];
+            }
+
+            if ((this.file.length() % divSize) == 0) {
+                this.fileParts.add(new byte[0]);
+            }
+
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String sha256(String fileString) {
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(fileString.getBytes(StandardCharsets.UTF_8));
+
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < encodedhash.length; i++) {
+                String hex = Integer.toHexString(0xff & encodedhash[i]);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return "null";
+
+    }
+
+    public File createFile(String path, String dir) {
+        File file = new File(dir + path);
+        try {
+            OutputStream os = new FileOutputStream(file);
+
+            for(int t = 0; t < this.fileData.getNumberOfChunks(); t++) {
+                os.write(this.getFilePart(t));
+                //System.out.println("Wrote\n");
+                //System.out.println(new String(this.getFilePart(t), StandardCharsets.UTF_8));
+
+            	//System.out.println("File parsed: " + new String(this.fileParts.get(t),StandardCharsets.UTF_8));
+            }
+
+            os.close();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+    
+    
+    public void incrementChunksBackedup() {
+    	this.numChunksBackedup.incrementAndGet();
+    }
+    public void setFileState(int v) {
+    	this.state.set(v);
+    }
+    public int getChunksBackedup() {
+    	return this.numChunksBackedup.get();
+    }
+    public int getState() {
+    	return this.state.get();
+    }
+
+
+}
