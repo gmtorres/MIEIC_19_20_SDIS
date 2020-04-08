@@ -63,8 +63,8 @@ public class InitPeer implements RemoteInterface{
 		
 		scheduler_executer = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(64);
 
-		serverThread = new ServerThread(this);
 		if (version == 2.0) {
+			serverThread = new ServerThread(this);
 			scheduler_executer.execute(this.serverThread);
 		}
 
@@ -302,7 +302,9 @@ public class InitPeer implements RemoteInterface{
 			            out.writeObject(peer.getMemory());
 			            out.close();
 						fileOut.close();
-						peer.getServerThread().close();
+						if (peer.getVersion() == 2.0) {
+							peer.getServerThread().close();
+						}
 			            System.out.printf("Serialized data of Peer " + peer.getId() + " has been saved in " + "./peer" + peer.getId() + "/memory" + peer.getId() +  ".ser");
 			         } catch (IOException i) {
 			            i.printStackTrace();

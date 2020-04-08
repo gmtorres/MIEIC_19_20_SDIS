@@ -31,7 +31,7 @@ public class ServerThread implements Runnable {
     }
 
     public void run() {
-        while (!p.getMemory().getRestoreFile().checkFlag()) {
+        while (true) {
             try {
                 p.getExecuter().execute(new ClientHandler(this.serverSocket.accept(), p.getMemory(), this.p));
             } catch (IOException e) {
