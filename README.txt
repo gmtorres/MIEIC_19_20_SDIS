@@ -40,20 +40,20 @@ java App peer_ip:access_point op [args]
 where:
 	peer_ip:access_point -  ip address of the machine of the where the peer that we want to communicate is and the acces_point is the name of the peer. if the ip address is not given, it is considered as "localhost"
 	op - operation we want to execute:
-							BACKUP - backup a file to the system with a given replication degree
-							RESTORE - restore a file from the system 
-							DELETE - delete a file from the system
-							RECLAIM - manage the available space of that peer to store chunks of other peers
-							STATUS - retrieve information about the peer
+				BACKUP - backup a file to the system with a given replication degree
+				RESTORE - restore a file from the system 
+				DELETE - delete a file from the system
+				RECLAIM - manage the available space of that peer to store chunks of other peers
+				STATUS - retrieve information about the peer
 	args - variable length parameter that depends on the operation:  (#=number of arguments )
-							BACKUP - file_path desired_replication    (#=2)
-											file_path - file_path of the file we want to backup
-											desired_replication - replication degree  we desire to achive when storing the file in other peers
-							RESTORE - file_path    (#=1)
-											file_path - file_path of the file we want to delete
-							DELETE - file_path    (#=1)
-											file_path - file_path of the file we want to delete
-							RECLAIM - size    (#=1)
-											size - new memory size available to the peer				
-							STATUS -    (#=0)
+				BACKUP - file_path desired_replication    (#=2)
+						file_path - file_path of the file we want to backup
+						desired_replication - replication degree  we desire to achive when storing the file in other peers
+				RESTORE - file_path    (#=1)
+						file_path - file_path of the file we want to delete
+				DELETE - file_path    (#=1)
+						file_path - file_path of the file we want to delete
+				RECLAIM - size    (#=1)
+						size - new memory size available to the peer				
+				STATUS -    (#=0)
 							
