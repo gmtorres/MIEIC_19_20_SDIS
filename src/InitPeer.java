@@ -107,7 +107,7 @@ public class InitPeer implements RemoteInterface{
         }     
         
         while(file.getChunksBackedup() != file.getNumberOfParts()) {}
-        int state = file.getState();
+        int state = file.getBackupState();
         
         if(state == 1) {
         	return "File " + file_name + " backedup but could not achived desired replication degree in some chunks.";
@@ -145,12 +145,18 @@ public class InitPeer implements RemoteInterface{
 	        }  
 		}
 		
-
-		while(!this.getMemory().getRestoreFile(file.getFileId()).checkFlag()) {}
-		FileInfo f = this.getMemory().getRestoreFile(file.getFileId());
-		f.setFile(f.createFile(f.getFileData().getFileName(), this.getMemory().path));
+		int state;
+		String str = "";
+		while( (state = this.getMemory().getRestoreFile(file.getFileId()).checkFlag()) == 0) {}
+		if(state == 1) {
+			FileInfo f = this.getMemory().getRestoreFile(file.getFileId());
+			f.setFile(f.createFile(f.getFileData().getFileName(), this.getMemory().path));
+			str = "File " + file_name + " restored successfully";
+		}else if(state == 2) {
+			str = "Restore of file " + file_name + " failed";
+		}
 		this.getMemory().eliminateRestoreFile(file.getFileId());
-        return "File " + file_name + " restored successfully";
+        return str;
 	}
 	
     public String delete(String file_name) {

@@ -22,10 +22,11 @@ public class FileInfo implements Serializable {
 	private ArrayList<byte[]> fileParts;
     private File file;
     private AtomicInteger numChunksWritten = new AtomicInteger(0);
-    private AtomicBoolean file_complete = new AtomicBoolean(false);
+    //private AtomicBoolean file_complete = new AtomicBoolean(false);
     
     private AtomicInteger numChunksBackedup = new AtomicInteger(0);
-    private AtomicInteger state = new AtomicInteger(0); // 0 = valid; 1 = partial failure; 2 = complete failure
+    private AtomicInteger backupState = new AtomicInteger(0); // 0 = valid; 1 = partial failure; 2 = complete failure
+    private AtomicInteger restoreState = new AtomicInteger(0); // 0 = restoring ; 1 = success; 2 =  failure
 
     private FileData fileData;
 
@@ -97,8 +98,8 @@ public class FileInfo implements Serializable {
         this.compareChunkNumber();
     }
 
-    public boolean checkFlag() {
-        return this.file_complete.get();
+    public int checkFlag() {
+        return this.restoreState.get();
     }
 
     public void increaseWritten() {
@@ -108,9 +109,13 @@ public class FileInfo implements Serializable {
     public int getWritten() {
         return this.numChunksWritten.get();
     }
+    
+    public void restoreFailed() {
+    	this.restoreState.set(2);
+    }
 
     public void activateFlag() {
-    	this.file_complete.set(true);
+    	this.restoreState.set(1);
     }
 
     public void compareChunkNumber() {
@@ -206,13 +211,21 @@ public class FileInfo implements Serializable {
     	this.numChunksBackedup.incrementAndGet();
     }
     public void setFileState(int v) {
-    	this.state.set(v);
+    	this.backupState.set(v);
     }
     public int getChunksBackedup() {
     	return this.numChunksBackedup.get();
     }
-    public int getState() {
-    	return this.state.get();
+    public int getBackupState() {
+    	return this.backupState.get();
+    }
+    
+    public void setRestoreState(int v) {
+    	this.restoreState.set(v);
+    }
+
+    public int getRestoreState() {
+    	return this.restoreState.get();
     }
 
 
