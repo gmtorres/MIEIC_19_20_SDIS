@@ -167,7 +167,7 @@ public class Memory implements Serializable {
 		//if(chunkStored.get(key) != null)
 			//return;
 		int newMemory = memoryInUse + data.length;
-		if(newMemory > this.maxMemory) return false; //sem espaço
+		if(newMemory > this.maxMemory) return false; //sem espaï¿½o
 		
 		try (FileOutputStream fileOuputStream = new FileOutputStream(this.path + key)) {
             fileOuputStream.write(data);

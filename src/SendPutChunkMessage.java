@@ -1,4 +1,3 @@
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 
@@ -22,14 +21,11 @@ public class SendPutChunkMessage implements Runnable{
 		message = new byte[headerB.length + data.length];
 		System.arraycopy(headerB, 0, message, 0, headerB.length);
 		System.arraycopy(data, 0, message, headerB.length, data.length);
-		
-		//System.out.println(message.length);
-		
+				
 		peer = p;
 		replication = rep;
 		key = fileId + "_"+ String.valueOf(chunkNo);
 		peer.getMemory().addChunckReplication(key,current_replication);
-		//System.out.println(new String(message, StandardCharsets.UTF_8));
 		
 	}	
 	

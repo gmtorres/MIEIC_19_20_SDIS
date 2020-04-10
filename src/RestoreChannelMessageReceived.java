@@ -28,17 +28,12 @@ public class RestoreChannelMessageReceived implements Runnable{
 
 		version = Double.parseDouble(headerStr[0]);
 		op = headerStr[1];
-		//System.out.println("Operacao: " + op);
 
-		//System.out.println("Sender_id111: " + headerStr[2]);
 		sender_id = Integer.parseInt(headerStr[2]);
-		//System.out.println("Sender_id: " + sender_id);
 		
 		fileId = headerStr[3];
-		//System.out.println("fileId: " + fileId);
 
 		chunkNo = Integer.parseInt(headerStr[4]);
-		//System.out.println("chunkNo: " + chunkNo);
 
 		peer = p;
     }
@@ -76,7 +71,6 @@ public class RestoreChannelMessageReceived implements Runnable{
 
 			else if (version == 2.0) {
 				if (peer.getMemory().isPeerRequesting(fileId + "_" + String.valueOf(chunkNo)) == 1) {
-					//peer.getMemory().eliminateRequestedChunk(fileId + "_" + String.valueOf(chunkNo));
 				}
 				else {
 					peer.getMemory().eliminateRequestedChunk(fileId + "_" + String.valueOf(chunkNo));

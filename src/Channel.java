@@ -32,6 +32,5 @@ public class Channel {
 		}catch (IOException ex) {
             ex.printStackTrace();
         }
-		//System.out.println("Message sent");
 	}
 }

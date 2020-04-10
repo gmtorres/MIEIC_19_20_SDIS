@@ -33,7 +33,6 @@ public class ControlChannel extends Channel implements Runnable {
 		catch(IOException e) {
 			e.printStackTrace();
 		}
-		// TODO Auto-generated method stub
 		s.close();
 	}
 	
