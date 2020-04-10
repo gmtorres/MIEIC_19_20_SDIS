@@ -22,7 +22,6 @@ public class SendStoredChunkMessage_v2 implements Runnable {
 	public void run() {
 		int perceived = peer.getMemory().getStoredChunkPerceivedReplication(fileId + "_" + chunkNo);
 		int desired = peer.getMemory().getStoredChunkDesiredReplication(fileId + "_" + chunkNo);
-		//System.out.println(perceived + "   " + desired);
 		if(perceived > desired) {
 			peer.getMemory().removeStoredChunk(fileId + "_" + chunkNo);
 		}else {

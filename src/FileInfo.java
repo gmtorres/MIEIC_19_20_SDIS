@@ -22,8 +22,6 @@ public class FileInfo implements Serializable {
 	private ArrayList<byte[]> fileParts;
     private File file;
     private AtomicInteger numChunksWritten = new AtomicInteger(0);
-    //private AtomicBoolean file_complete = new AtomicBoolean(false);
-    
     private AtomicInteger numChunksBackedup = new AtomicInteger(0);
     private AtomicInteger backupState = new AtomicInteger(0); // 0 = valid; 1 = partial failure; 2 = complete failure
     private AtomicInteger restoreState = new AtomicInteger(0); // 0 = restoring ; 1 = success; 2 =  failure
@@ -135,14 +133,9 @@ public class FileInfo implements Serializable {
 
             int bytesAmount = 0;
 
-            /*
-             * while((bytesAmount = bufInputStream.read(buf)) > 0) {
-             * this.fileParts.add(buf); buf = new byte[divSize]; }
-             */
             while ((bytesAmount = bufInputStream.read(buf, 0, divSize)) > 0) {
                 byte[] newBuf = Arrays.copyOf(buf, bytesAmount);
                 this.fileParts.add(newBuf);
-                // System.out.println("File parsed: " + new String(newBuf,StandardCharsets.UTF_8) + " " + newBuf.length);
                 buf = new byte[divSize];
             }
 
@@ -190,16 +183,11 @@ public class FileInfo implements Serializable {
 
             for(int t = 0; t < this.fileData.getNumberOfChunks(); t++) {
                 os.write(this.getFilePart(t));
-                //System.out.println("Wrote\n");
-                //System.out.println(new String(this.getFilePart(t), StandardCharsets.UTF_8));
-
-            	//System.out.println("File parsed: " + new String(this.fileParts.get(t),StandardCharsets.UTF_8));
             }
 
             os.close();
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

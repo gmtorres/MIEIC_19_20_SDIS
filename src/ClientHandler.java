@@ -56,8 +56,7 @@ public class ClientHandler extends Thread {
                 }
     
                 else {
-                    System.out.println("Chunk already restored"); //Meti mensagem diferente porque neste caso é sempre o peer a pedir, 
-                                                                  //pode e ter ocorrido um processo ao mesmo tempo
+                    System.out.println("Chunk already restored"); 
                 }
                 
             }
