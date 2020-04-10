@@ -6,18 +6,20 @@ public class FileData implements Serializable {
 
 	
 	private String filepath;
+	private String filename;
 	private String fileId;
 	private int desiredReplicationDegree;
 	private int percievedReplicationDegree;
 	
 	private int numberOfChunks;
 	
-	FileData(String fp, String fi , int rep, int n){
+	FileData(String fp, String fi , int rep, int n,String fn){
 		filepath = fp;
 		fileId = fi;
 		desiredReplicationDegree = rep;
 		numberOfChunks = n;
 		percievedReplicationDegree = 0;
+		this.filename = fn;
 	}
 
 	public String getFilepath() {
@@ -41,6 +43,14 @@ public class FileData implements Serializable {
 
 	public int getNumberOfChunks() {
 		return numberOfChunks;
+	}
+	
+	public void setFileName(String n) {
+		this.filename = n;
+	}
+	
+	public String getFileName() {
+		return this.filename;
 	}
 	
 }

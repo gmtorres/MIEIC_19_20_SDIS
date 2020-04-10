@@ -85,6 +85,11 @@ public class InitPeer implements RemoteInterface{
 			String message = this.getVersion() + " DELETE " + this.getId() + " " + fd.getFileId() + " " + CRLF + CRLF;
 			this.getControlChannel().sendMessage(message.getBytes());
 			this.getMemory().removeFile(fd.getFileId());
+			try {
+	            Thread.sleep(50);
+	        }catch(Exception e) {
+	        	System.out.println(e);
+	        }   
 		}
 		
 
@@ -143,7 +148,7 @@ public class InitPeer implements RemoteInterface{
 
 		while(!this.getMemory().getRestoreFile().checkFlag()) {}
 		FileInfo f = this.getMemory().getRestoreFile();
-		f.setFile(f.createFile(f.getFileData().getFilepath(), this.getMemory().path));
+		f.setFile(f.createFile(f.getFileData().getFileName(), this.getMemory().path));
 
         return "File " + file_name + " restored successfully";
 	}
@@ -305,7 +310,7 @@ public class InitPeer implements RemoteInterface{
 						if (peer.getVersion() == 2.0) {
 							peer.getServerThread().close();
 						}
-			            System.out.printf("Serialized data of Peer " + peer.getId() + " has been saved in " + "./peer" + peer.getId() + "/memory" + peer.getId() +  ".ser");
+			            System.out.println("Serialized data of Peer " + peer.getId() + " has been saved in " + "./peer" + peer.getId() + "/memory" + peer.getId() +  ".ser");
 			         } catch (IOException i) {
 			            i.printStackTrace();
 			         }

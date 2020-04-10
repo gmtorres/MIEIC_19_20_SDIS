@@ -21,7 +21,7 @@ public class FileInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ArrayList<byte[]> fileParts;
     private File file;
-    private int numChunksWritten = 0;
+    private AtomicInteger numChunksWritten = new AtomicInteger(0);
     private AtomicBoolean file_complete = new AtomicBoolean(false);
     
     private AtomicInteger numChunksBackedup = new AtomicInteger(0);
@@ -35,7 +35,7 @@ public class FileInfo implements Serializable {
 
         fileDivision();
 
-        this.fileData = new FileData(path, createFileId(), replicationDegree, this.fileParts.size());
+        this.fileData = new FileData(path, createFileId(), replicationDegree, this.fileParts.size(),this.file.getName());
     }
 
     public FileInfo(FileData fileData) {
@@ -102,11 +102,11 @@ public class FileInfo implements Serializable {
     }
 
     public void increaseWritten() {
-        this.numChunksWritten++;
+        this.numChunksWritten.incrementAndGet();
     }
 
     public int getWritten() {
-        return this.numChunksWritten;
+        return this.numChunksWritten.get();
     }
 
     public void activateFlag() {
@@ -115,7 +115,7 @@ public class FileInfo implements Serializable {
 
     public void compareChunkNumber() {
     	System.out.println( this.fileData.getFilepath() + ": " +  this.numChunksWritten + " of " + this.fileData.getNumberOfChunks());
-        if (this.numChunksWritten == this.fileData.getNumberOfChunks()) {
+        if (this.getWritten() == this.fileData.getNumberOfChunks()) {
         	this.activateFlag();
         }
     }

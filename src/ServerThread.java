@@ -35,7 +35,11 @@ public class ServerThread implements Runnable {
             try {
                 p.getExecuter().execute(new ClientHandler(this.serverSocket.accept(), p.getMemory(), this.p));
             } catch (IOException e) {
-                e.printStackTrace();
+            	if(this.serverSocket.isClosed())
+            		System.out.println("Server closed");
+            	else
+            		System.out.println(e.toString());
+                break;
             }
         }
     }

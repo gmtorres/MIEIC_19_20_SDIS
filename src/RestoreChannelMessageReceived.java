@@ -48,6 +48,7 @@ public class RestoreChannelMessageReceived implements Runnable{
 			if(buf[i] == 0xD && buf[i+1] == 0xA && buf[i+2] == 0xD && buf[i+3] == 0xA) {
 				header = Arrays.copyOf(buf, i);
 				body = Arrays.copyOfRange(buf,i+4,buf.length);
+				break;
 			}
 		}
 	}

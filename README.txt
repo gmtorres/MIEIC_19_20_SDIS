@@ -16,6 +16,11 @@ To compile the project, inside the src directory, run:
 
 HOW TO RUN:
 
+Start RMI
+
+Write
+	Windows: start rmiregistry
+
 .PEER
 
 To run the peers:
@@ -31,6 +36,8 @@ where:
 	rst_ip:rst_port - multicast ip address and the port for the restore channel, separated by ":", generally common among peers
 
 To end the peer, click CNTRL+C.
+
+Example : java InitPeer 2.0 1 Peer1 224.0.0.15:8001 224.0.0.16:8002 224.0.0.17:8003
 
 .TESTAPP
 To run the client interface app:
@@ -57,3 +64,4 @@ where:
 						size - new memory size available to the peer				
 				STATUS -    (#=0)
 							
+Example: java App localhost:Peer1 BACKUP paisagem.jpg 2
