@@ -21,24 +21,19 @@ public class BackupChannelMessageReceived implements Runnable{
 		
 	
 	BackupChannelMessageReceived(byte[] buffer,InitPeer p){
-		System.out.println("1");
 		getHeaderAndBody(buffer);
 		
 		String headerS = new String(header, StandardCharsets.UTF_8);
-		System.out.println(headerS);
 		String [] headerStr = headerS.split(" ");
 		
 		
 		version = Double.parseDouble(headerStr[0]);
 		op = headerStr[1];
 		sender_id = Integer.parseInt(headerStr[2]);
-		System.out.println("2");
 		fileId = headerStr[3];
 		chunkNo = Integer.parseInt(headerStr[4]);
 		replicationDegree = Integer.parseInt(headerStr[5]);
-		System.out.println("3");
 		peer = p;
-		System.out.println("4");
 	}
 	
 	private void getHeaderAndBody(byte[] buf) {

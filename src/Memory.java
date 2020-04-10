@@ -42,9 +42,10 @@ public class Memory implements Serializable {
 	
 	private ArrayList<Pair<String,Integer>> filesDeleted = new ArrayList<Pair<String,Integer>>();
 
-	private FileInfo restoreFile = null;
+	//private FileInfo restoreFile = null;
+	private ConcurrentHashMap<String,FileInfo> restoreFile = new ConcurrentHashMap<String,FileInfo>();
 
-	String path = "";
+	String path = "./";
 	
 	private int maxMemory = 10000000; //10MB //expresso em bytes
 	private int memoryInUse = 0;
@@ -391,7 +392,7 @@ public class Memory implements Serializable {
 	}
 
 
-	public void changeRestoreFile(FileInfo file) {
+	/*public void changeRestoreFile(FileInfo file) {
 		restoreFile = file;
 	}
 
@@ -401,8 +402,15 @@ public class Memory implements Serializable {
 
 	public FileInfo getRestoreFile() {
 		return restoreFile;
+	}*/
+	public void addRestoreFile(FileInfo file) {
+		restoreFile.put(file.getFileData().getFileId(), file);
 	}
-
-	
+	public void eliminateRestoreFile(String fileId) {
+		restoreFile.remove(fileId);
+	}
+	public FileInfo getRestoreFile(String fileId) {
+		return restoreFile.get(fileId);
+	}
 	
 }

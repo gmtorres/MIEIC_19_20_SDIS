@@ -130,14 +130,14 @@ public class InitPeer implements RemoteInterface{
 
 
 		FileInfo file = new FileInfo(fd);
-		this.getMemory().changeRestoreFile(file);
+		this.getMemory().addRestoreFile(file);
 
 		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
-			this.getMemory().addRequestedChunkPeer(this.getMemory().getRestoreFile().getFileData().getFileId() + "_" + i);
+			this.getMemory().addRequestedChunkPeer(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() + "_" + i);
 		}
 
 		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
-			this.getExecuter().execute(new SendGetChunkMessage(this.getMemory().getRestoreFile().getFileData().getFileId() , i , this));
+			this.getExecuter().execute(new SendGetChunkMessage(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() , i , this));
 			try{
 				Thread.sleep(20);
 			}catch(Exception e) {
@@ -146,10 +146,10 @@ public class InitPeer implements RemoteInterface{
 		}
 		
 
-		while(!this.getMemory().getRestoreFile().checkFlag()) {}
-		FileInfo f = this.getMemory().getRestoreFile();
+		while(!this.getMemory().getRestoreFile(file.getFileId()).checkFlag()) {}
+		FileInfo f = this.getMemory().getRestoreFile(file.getFileId());
 		f.setFile(f.createFile(f.getFileData().getFileName(), this.getMemory().path));
-
+		this.getMemory().eliminateRestoreFile(file.getFileId());
         return "File " + file_name + " restored successfully";
 	}
 	

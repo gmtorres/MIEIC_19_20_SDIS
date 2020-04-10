@@ -16,10 +16,7 @@ public class SendPutChunkMessage implements Runnable{
 	FileInfo fI = null;
 	
 	SendPutChunkMessage(String fileId , int chunkNo, byte[] data, int rep, int current_replication, InitPeer p){
-		System.out.println("a");
 		String header = String.valueOf(p.getVersion()) + " PUTCHUNK " + String.valueOf(p.getId()) + " " + fileId + " " + chunkNo + " " + rep + " " + CRLF + CRLF;
-		System.out.println(header);
-		System.out.println("b");
 		byte[] headerB = header.getBytes();
 		
 		message = new byte[headerB.length + data.length];
@@ -32,7 +29,6 @@ public class SendPutChunkMessage implements Runnable{
 		replication = rep;
 		key = fileId + "_"+ String.valueOf(chunkNo);
 		peer.getMemory().addChunckReplication(key,current_replication);
-		System.out.println("c");
 		//System.out.println(new String(message, StandardCharsets.UTF_8));
 		
 	}	

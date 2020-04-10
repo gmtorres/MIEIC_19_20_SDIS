@@ -62,7 +62,7 @@ public class RestoreChannelMessageReceived implements Runnable{
 			if (version == 1.0) {
 				if (peer.getMemory().isPeerRequesting(fileId + "_" + String.valueOf(chunkNo)) == 1) {
 					peer.getMemory().eliminateRequestedChunk(fileId + "_" + String.valueOf(chunkNo));
-					peer.getMemory().getRestoreFile().setFilePart(chunkNo, body);
+					peer.getMemory().getRestoreFile(fileId).setFilePart(chunkNo, body);
 				}
 	
 				else {
