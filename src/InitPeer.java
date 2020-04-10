@@ -79,6 +79,11 @@ public class InitPeer implements RemoteInterface{
         	return "Replication degree must be between 1 and 9";
         }
         
+        FileInfo file = new FileInfo(file_name, replication);
+        if(file.doesFileExists() == false) {
+        	return "File " + file_name +" not found";
+        }
+        
         FileData fd = this.getMemory().getFileData(file_name);
 		if(fd != null) {
 			System.out.println("Found new version of file, deleting the old one");
@@ -92,10 +97,6 @@ public class InitPeer implements RemoteInterface{
 	        }   
 		}
 		
-
-        
-        
-        FileInfo file = new FileInfo(file_name, replication);
         this.memory.addBackupFile(file.getFileData());
         try {
         	for(int i = 0; i < file.getNumberOfParts(); i++) {

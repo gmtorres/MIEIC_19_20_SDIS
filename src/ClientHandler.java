@@ -51,7 +51,9 @@ public class ClientHandler extends Thread {
             
             if(op.equals("CHUNK")) { 
                 if (peer.getMemory().isPeerRequesting(fileId + "_" + String.valueOf(chunkNo)) == 1) {
-                    peer.getMemory().getRestoreFile(fileId).setFilePart(chunkNo, body);
+                	FileInfo fI = peer.getMemory().getRestoreFile(fileId); 
+                    if(fI != null)
+                    	fI.setFilePart(chunkNo, body);
                     peer.getMemory().eliminateRequestedChunk(fileId + "_" + String.valueOf(chunkNo));
                 }
     

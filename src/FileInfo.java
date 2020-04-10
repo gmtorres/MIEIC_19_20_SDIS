@@ -33,8 +33,8 @@ public class FileInfo implements Serializable {
     public FileInfo(String path, int replicationDegree) {
         this.file = new File(path);
         this.fileParts = new ArrayList<byte[]>();
-
-        fileDivision();
+        if(this.doesFileExists())
+        	fileDivision();
 
         this.fileData = new FileData(path, createFileId(), replicationDegree, this.fileParts.size(),this.file.getName());
     }
@@ -50,7 +50,9 @@ public class FileInfo implements Serializable {
             this.fileParts.add(null);
         }
     }
-
+    public boolean doesFileExists() {
+    	return this.file.exists();
+    }
 
     public void setFile(File file) {
         this.file = file;
