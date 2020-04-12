@@ -55,7 +55,7 @@ public class ControlChannelMessageReceived implements Runnable {
 	}
 
 	private void getHeaderAndBody(byte[] buf) {
-		for(int i = 0; i < buf.length - 4 ; ++i) {
+		for(int i = 0; i <= buf.length - 4 ; ++i) {
 			if(buf[i] == 0xD && buf[i+1] == 0xA && buf[i+2] == 0xD && buf[i+3] == 0xA) {
 				header = Arrays.copyOf(buf, i);
 				body = Arrays.copyOfRange(buf,i+4,buf.length);
@@ -150,22 +150,6 @@ public class ControlChannelMessageReceived implements Runnable {
 				
 				peer.getMemory().addDeletedChunk(key);
 				int delay = new Random().nextInt(401);
-				/*try {
-					Thread.sleep(new Random().nextInt(401));
-				}
-				catch(Exception e) {
-					System.out.println(e);
-				}
-				
-				if(peer.getMemory().isDeletedChunkToSend(key)) {
-					peer.getMemory().removeDeletedChunk(key);
-					byte [] data = peer.getMemory().getChunkData(key);
-					if(data == null)
-						return;
-					else System.out.println(data.length);
-					//SEND PUTCHUNK AFTER A GIVEN TIME IF IT HASNT RECEIVED YET
-					peer.getExecuter().execute(new SendPutChunkMessage(file_id , chunkNo , data , desiredReplication , perceivedReplication, peer));
-				}*/
 				this.peer.getExecuter().schedule(new RemoveProtocol(peer,file_id,chunkNo,desiredReplication,perceivedReplication),delay,TimeUnit.MILLISECONDS);
 				
 			}

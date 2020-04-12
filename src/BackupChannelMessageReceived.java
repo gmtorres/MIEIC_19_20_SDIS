@@ -22,7 +22,6 @@ public class BackupChannelMessageReceived implements Runnable{
 	
 	BackupChannelMessageReceived(byte[] buffer,InitPeer p){
 		getHeaderAndBody(buffer);
-		
 		String headerS = new String(header, StandardCharsets.UTF_8);
 		String [] headerStr = headerS.split(" ");
 		
@@ -37,7 +36,7 @@ public class BackupChannelMessageReceived implements Runnable{
 	}
 	
 	private void getHeaderAndBody(byte[] buf) {
-		for(int i = 0; i < buf.length - 4 ; ++i) {
+		for(int i = 0; i <= buf.length - 4 ; ++i) {
 			if(buf[i] == 0xD && buf[i+1] == 0xA && buf[i+2] == 0xD && buf[i+3] == 0xA) {
 				header = Arrays.copyOf(buf, i);
 				body = Arrays.copyOfRange(buf,i+4,buf.length);

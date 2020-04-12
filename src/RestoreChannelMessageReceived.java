@@ -39,7 +39,7 @@ public class RestoreChannelMessageReceived implements Runnable{
     }
     
     private void getHeaderAndBody(byte[] buf) {
-		for(int i = 0; i < buf.length - 4 ; ++i) {
+		for(int i = 0; i <= buf.length - 4 ; ++i) {
 			if(buf[i] == 0xD && buf[i+1] == 0xA && buf[i+2] == 0xD && buf[i+3] == 0xA) {
 				header = Arrays.copyOf(buf, i);
 				body = Arrays.copyOfRange(buf,i+4,buf.length);
