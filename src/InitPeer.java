@@ -93,14 +93,16 @@ public class InitPeer implements RemoteInterface{
 		}
 		
         this.memory.addBackupFile(file.getFileData());
-        try {
-        	for(int i = 0; i < file.getNumberOfParts(); i++) {
-            	this.getExecuter().execute(new SendPutChunkMessage(file , i , file.getFilePart(i) , replication , 0, this));
-            	Thread.sleep(20);
-            } 
-        }catch(Exception e) {
-        	System.out.println(e);
-        }     
+
+    	for(int i = 0; i < file.getNumberOfParts(); i++) {
+        	this.getExecuter().execute(new SendPutChunkMessage(file , i , file.getFilePart(i) , replication , 0, this));
+        	try{
+				Thread.sleep(40);
+			}catch(Exception e) {
+	        	System.out.println(e);
+	        }  
+        } 
+  
         
         while(file.getChunksBackedup() != file.getNumberOfParts()) {}
         int state = file.getBackupState();

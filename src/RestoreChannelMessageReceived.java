@@ -63,9 +63,9 @@ public class RestoreChannelMessageReceived implements Runnable{
 				}
 	
 				else {
-					System.out.println(peer.getMemory().isPeerRequesting(fileId + "_" + String.valueOf(chunkNo)));
+					//System.out.println(peer.getMemory().isPeerRequesting(fileId + "_" + String.valueOf(chunkNo)));
 					peer.getMemory().eliminateRequestedChunk(fileId + "_" + String.valueOf(chunkNo));
-					System.out.println("Chunk is not for me.");
+					//System.out.println("Chunk is not for me.");
 				}
 			}
 
