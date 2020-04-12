@@ -149,8 +149,8 @@ public class ControlChannelMessageReceived implements Runnable {
 				System.out.println("MUST INITIATE PROTOCOL");
 				
 				peer.getMemory().addDeletedChunk(key);
-			
-				try {
+				int delay = new Random().nextInt(401);
+				/*try {
 					Thread.sleep(new Random().nextInt(401));
 				}
 				catch(Exception e) {
@@ -165,7 +165,8 @@ public class ControlChannelMessageReceived implements Runnable {
 					else System.out.println(data.length);
 					//SEND PUTCHUNK AFTER A GIVEN TIME IF IT HASNT RECEIVED YET
 					peer.getExecuter().execute(new SendPutChunkMessage(file_id , chunkNo , data , desiredReplication , perceivedReplication, peer));
-				}
+				}*/
+				this.peer.getExecuter().schedule(new RemoveProtocol(peer,file_id,chunkNo,desiredReplication,perceivedReplication),delay,TimeUnit.MILLISECONDS);
 				
 			}
 			

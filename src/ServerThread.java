@@ -15,7 +15,7 @@ public class ServerThread implements Runnable {
         int offset = 0;
         while(true) {
         	try {
-            	port = 1025 + ( peer.getId() +  offset) % (65525 - 1024);
+            	port = 1025 + ( peer.getId() +  offset) % (65536- 1025);
                 this.serverSocket = new ServerSocket(port, 10000, InetAddress.getLocalHost());
                 break;
             } catch (UnknownHostException e) {
@@ -23,7 +23,7 @@ public class ServerThread implements Runnable {
                 break;
             } catch (BindException e) {
             	System.out.println(e);
-            	if(offset < 65525 - 1024) {
+            	if(offset < (65536- 1025)) {
             		System.out.println("Trying another port");
             		offset++;
             	}else {
