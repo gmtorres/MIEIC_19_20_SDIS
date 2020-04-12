@@ -97,7 +97,7 @@ public class FileInfo implements Serializable {
             this.increaseWritten();
             this.compareChunkNumber();
     	}else {
-    		System.out.println("Chunk " + chunkNo + "already stored");
+    		//System.out.println("Chunk " + chunkNo + " already stored");
     	}
     }
 

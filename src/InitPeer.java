@@ -132,7 +132,7 @@ public class InitPeer implements RemoteInterface{
 			this.getMemory().addRequestedChunkPeer(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() + "_" + i);
 			this.getExecuter().execute(new SendGetChunkMessage(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() , i , this));
 			try{
-				Thread.sleep(20);
+				Thread.sleep(40);
 			}catch(Exception e) {
 	        	System.out.println(e);
 	        }  
