@@ -162,6 +162,7 @@ public class ControlChannelMessageReceived implements Runnable {
 					byte [] data = peer.getMemory().getChunkData(key);
 					if(data == null)
 						return;
+					else System.out.println(data.length);
 					//SEND PUTCHUNK AFTER A GIVEN TIME IF IT HASNT RECEIVED YET
 					peer.getExecuter().execute(new SendPutChunkMessage(file_id , chunkNo , data , desiredReplication , perceivedReplication, peer));
 				}

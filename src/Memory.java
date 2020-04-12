@@ -264,14 +264,35 @@ public class Memory implements Serializable {
 	public void reclaimMemory(int newMemory,InitPeer peer) {
 		maxMemory = newMemory;
 		if(maxMemory >= memoryInUse) { //se a restri��o de memoria n�o altera o que est� guardado
-			return;
-		}
+			
+		}else {
 		
-		Set<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> entrySet = chunkStored.entrySet();
-		for(Iterator<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> itr = entrySet.iterator(); memoryInUse > maxMemory && itr.hasNext();) {
-			ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> entry = itr.next();
-			if(entry.getValue().getValue() > entry.getValue().getKey()) { // perceived > desired 
-				String key = entry.getKey();
+			Set<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> entrySet = chunkStored.entrySet();
+			for(Iterator<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> itr = entrySet.iterator(); memoryInUse > maxMemory && itr.hasNext();) {
+				ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> entry = itr.next();
+				if(entry.getValue().getValue() > entry.getValue().getKey()) { // perceived > desired 
+					String key = entry.getKey();
+					removeStoredChunk(key);
+					System.out.println("Removed chunk: " + key);
+					String [] chunkInfo = key.split("_");
+					String message = peer.getVersion() + " REMOVED " + peer.getId() + " " + chunkInfo[0] + " " + chunkInfo[1] + " " + CRLF + CRLF;
+					peer.getControlChannel().sendMessage(message.getBytes());
+				}
+			}
+			
+			while(memoryInUse > maxMemory) {
+				
+				ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> max_entry = null;
+				
+				for(Iterator<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> itr = entrySet.iterator();itr.hasNext();) {
+					ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> entry = itr.next();
+					if(max_entry == null || entry.getValue().getValue() > max_entry.getValue().getValue()) { // perceived > desired 
+						max_entry = entry;
+					}
+				}
+				if(max_entry == null)
+					break;
+				String key = max_entry.getKey();
 				removeStoredChunk(key);
 				System.out.println("Removed chunk: " + key);
 				String [] chunkInfo = key.split("_");
@@ -279,27 +300,7 @@ public class Memory implements Serializable {
 				peer.getControlChannel().sendMessage(message.getBytes());
 			}
 		}
-		
-		while(memoryInUse > maxMemory) {
-			
-			ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> max_entry = null;
-			
-			for(Iterator<ConcurrentHashMap.Entry<String,Pair<Integer,Integer>>> itr = entrySet.iterator();itr.hasNext();) {
-				ConcurrentHashMap.Entry<String,Pair<Integer,Integer>> entry = itr.next();
-				if(max_entry == null || entry.getValue().getValue() > max_entry.getValue().getValue()) { // perceived > desired 
-					max_entry = entry;
-				}
-			}
-			if(max_entry == null)
-				break;
-			String key = max_entry.getKey();
-			removeStoredChunk(key);
-			System.out.println("Removed chunk: " + key);
-			String [] chunkInfo = key.split("_");
-			String message = peer.getVersion() + " REMOVED " + peer.getId() + " " + chunkInfo[0] + " " + chunkInfo[1] + " " + CRLF + CRLF;
-			peer.getControlChannel().sendMessage(message.getBytes());
-		}
-		
+		System.out.println("New memory now at " + newMemory);
 	}
 	
 	

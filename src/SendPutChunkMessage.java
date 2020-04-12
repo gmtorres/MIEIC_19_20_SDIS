@@ -38,6 +38,8 @@ public class SendPutChunkMessage implements Runnable{
 	public void run() {
 		
 		int rep = peer.getMemory().getChunkReplication(key);
+		if(rep == -1)
+			return;
 		
 		if(rep < replication) {
 			peer.getBackupChannel().sendMessage(message);

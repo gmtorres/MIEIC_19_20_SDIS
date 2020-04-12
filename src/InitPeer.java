@@ -8,11 +8,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class InitPeer implements RemoteInterface{	
 
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	static final String CRLF = String.valueOf((char)0xD) + String.valueOf((char)0xA) ;
 	
