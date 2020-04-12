@@ -7,19 +7,39 @@ import java.net.UnknownHostException;
 public class ServerThread implements Runnable {
 
     private InitPeer p;
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
+    private int port = 1025;
 
     ServerThread(InitPeer peer) {
         this.p = peer;
-        try {
-            this.serverSocket = new ServerSocket(6666 + p.getId(), 10000, InetAddress.getLocalHost());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (BindException e) {
-        } catch (IOException e) {
-            e.printStackTrace();
-        } 
+        int offset = 0;
+        while(true) {
+        	try {
+            	port = 1025 + ( peer.getId() +  offset) % (65525 - 1024);
+                this.serverSocket = new ServerSocket(port, 10000, InetAddress.getLocalHost());
+                break;
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+                break;
+            } catch (BindException e) {
+            	System.out.println(e);
+            	if(offset < 65525 - 1024) {
+            		System.out.println("Trying another port");
+            		offset++;
+            	}else {
+            		System.out.println("Could find valid port for socket");
+            		break;
+            	}
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
         
+    }
+    
+    public int getPort() {
+    	return port;
     }
 
     public void close() {

@@ -160,7 +160,8 @@ public class ControlChannelMessageReceived implements Runnable {
 				if(peer.getMemory().isDeletedChunkToSend(key)) {
 					peer.getMemory().removeDeletedChunk(key);
 					byte [] data = peer.getMemory().getChunkData(key);
-					
+					if(data == null)
+						return;
 					//SEND PUTCHUNK AFTER A GIVEN TIME IF IT HASNT RECEIVED YET
 					peer.getExecuter().execute(new SendPutChunkMessage(file_id , chunkNo , data , desiredReplication , perceivedReplication, peer));
 				}

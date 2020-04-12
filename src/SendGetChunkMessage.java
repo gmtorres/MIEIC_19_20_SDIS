@@ -22,7 +22,7 @@ public class SendGetChunkMessage implements Runnable {
             try {
             InetAddress addressServer = InetAddress.getLocalHost();
             String addressString = addressServer.getHostAddress();
-            int port_num = 6666 + p.getId();
+            int port_num = p.getServerThread().getPort();
             addressString += "/";
             addressString += String.valueOf(port_num);
 

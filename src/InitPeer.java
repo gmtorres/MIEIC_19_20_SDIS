@@ -135,9 +135,6 @@ public class InitPeer implements RemoteInterface{
 
 		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
 			this.getMemory().addRequestedChunkPeer(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() + "_" + i);
-		}
-
-		for(int i = 0; i < fd.getNumberOfChunks() ; i++) {
 			this.getExecuter().execute(new SendGetChunkMessage(this.getMemory().getRestoreFile(file.getFileId()).getFileData().getFileId() , i , this));
 			try{
 				Thread.sleep(20);
@@ -315,7 +312,8 @@ public class InitPeer implements RemoteInterface{
 			            out.close();
 						fileOut.close();
 						if (peer.getVersion() == 2.0) {
-							peer.getServerThread().close();
+							if(peer.getServerThread() != null )
+								peer.getServerThread().close();
 						}
 			            System.out.println("Serialized data of Peer " + peer.getId() + " has been saved in " + "./peer" + peer.getId() + "/memory" + peer.getId() +  ".ser");
 			         } catch (IOException i) {

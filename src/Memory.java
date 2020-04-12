@@ -380,6 +380,8 @@ public class Memory implements Serializable {
 	}
 
 	public byte[] getChunkData(String key) {
+		if(this.isChunkStored(key) == false)
+			return null;
 		byte[] buf = null;
 		File file = new File(path + key);
 		try(FileInputStream fileInputStream = new FileInputStream(file);){

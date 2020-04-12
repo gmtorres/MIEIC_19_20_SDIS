@@ -92,9 +92,11 @@ public class FileInfo implements Serializable {
     }
 
     public void setFilePart(int chunkNo, byte[] chunk) {
-        fileParts.set(chunkNo, chunk);
-        this.increaseWritten();
-        this.compareChunkNumber();
+    	if(this.getFilePart(chunkNo) == null) { // se não estiver nada escrito lá
+    		fileParts.set(chunkNo, chunk);
+            this.increaseWritten();
+            this.compareChunkNumber();
+    	}
     }
 
     public int checkFlag() {
@@ -179,15 +181,13 @@ public class FileInfo implements Serializable {
 
     public File createFile(String path, String dir) {
         File file = new File(dir + path);
-        try {
-            OutputStream os = new FileOutputStream(file);
-
+        System.out.println("Writing into " + dir + path);
+        try(OutputStream os = new FileOutputStream(file);) {
             for(int t = 0; t < this.fileData.getNumberOfChunks(); t++) {
-                os.write(this.getFilePart(t));
+            	byte [] data = this.getFilePart(t);
+            	if(data == null) System.out.println("DATA is NULL");
+            	else os.write(data);
             }
-
-            os.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
