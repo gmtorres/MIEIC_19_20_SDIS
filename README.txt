@@ -65,3 +65,16 @@ where:
 				STATUS -    (#=0)
 							
 Example: java App localhost:Peer1 BACKUP paisagem.jpg 2
+
+
+DEMO:
+
+Demo in file : demo.sh
+
+Requisites: the demo needs 3 peers running, with the following access points : Peer1, Peer2 and Peer3.
+
+
+In the first phase the demo sets the maximum space to 10000000 in each peer, then it backups paisagem.jpg with replication of 2 from Peer1 and checks the status of each peer before restoring and deleting the file.
+Then it checks each peer status, and sets the maximum space to 65000 in Peer2 and backups bigmac.jpg with replication of 2 from Peer3.
+Finally, it sets the maximum space to 0 in Peer2 and does status again and restores and delete bigmac.jpg file.
+
