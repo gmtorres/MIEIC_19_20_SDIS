@@ -4,7 +4,8 @@ Project 1 -- Distributed Backup Service
 Gustavo Torres up201706473
 Joaquim Rodrigues up201704844
 
-
+JAVA version: 1.8.0_241
+JAVA SE Runtime Environment build: 1.8.0_241-b07
 
 HOW TO COMPILE:
 
