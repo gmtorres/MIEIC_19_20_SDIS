@@ -1,6 +1,8 @@
 SDIS 2019/2020 - 2nd Semester
 Project 1 -- Distributed Backup Service
 
+GRADE: 20/20
+
 Gustavo Torres up201706473
 Joaquim Rodrigues up201704844
 
